@@ -1,0 +1,163 @@
+\chapter{Gaussian}
+
+\section{Molecule Construction}
+
+\subsection*{General Ideas}
+Use GaussView or similar tools to construct the initial geometry. Proper naming of files is encouraged:
+
+\begin{verbatim}
+Molecule_Symmetry_State_Functional_BasisSet_CalcType_Solvent.gjf
+\end{verbatim}
+
+\textbf{Example:}
+
+\begin{verbatim}
+DSB_C2H_GS_BL_6311gd_Opt-Freq_Vac.gjf
+\end{verbatim}
+
+\begin{itemize}
+\item \textbf{State}: GS, S1, T1, etc.
+\item \textbf{Functional}: B3LYP, CAM-B3LYP, M06HF, etc.
+\item \textbf{BasisSet}: 6-31G(d), 6-311G(d,p)
+\item \textbf{CalcType}: Opt, Freq, SP, TDDFT, etc.
+\end{itemize}
+
+\subsection*{Tips for Optimization Verification}
+\begin{itemize}
+\item Use GaussView: \textit{Read intermediate geometries (optimization)}
+\item For excited state geometry optimization: use the \textbf{penultimate} geometry when resubmitting.
+\end{itemize}
+
+\section{Optimization and Frequency Calculation}
+
+\subsection*{Input File Preparation}
+Use keywords such as:
+
+\begin{verbatim}
+#p B3LYP/6-311G(d) Opt Freq
+\end{verbatim}
+
+\subsection*{Job Submission}
+Submit your \texttt{.gjf} files to the cluster with \texttt{.pbs} or SLURM scripts.
+
+Example PBS script:
+
+\begin{verbatim}
+#!/bin/bash
+#PBS -N my_gaussian_job
+#PBS -l nodes=1:ppn=8
+#PBS -l walltime=12:00:00
+#PBS -j oe
+cd $PBS_O_WORKDIR
+g16 < input.gjf > output.log
+\end{verbatim}
+
+\subsection*{Output File Analysis}
+Use GaussView or analyze manually the \texttt{.log} and \texttt{.chk} files.
+
+\section{File Conversion and Orbital Analysis}
+
+\subsection*{Generate .fchk Files}
+Use \texttt{formchk}:
+
+\begin{verbatim}
+formchk input.chk output.fchk
+\end{verbatim}
+
+\subsection*{Molecular Orbitals}
+Load \texttt{.fchk} in GaussView for orbital visualization. Use isovalue settings to adjust surface display.
+
+\section{Linear Response (TDDFT) Calculations}
+
+\subsection*{Input File}
+Example:
+
+\begin{verbatim}
+#p CAM-B3LYP/6-311G(d,p) TD(NStates=10)
+\end{verbatim}
+
+\subsection*{Analysis}
+Examine the excited states section in the \texttt{.log} file. Extract oscillator strengths, transition energies, and orbital contributions.
+
+\section{Complex Systems and Spectroscopy}
+
+\subsection*{Metal Complex Optimization}
+Use Effective Core Potentials (ECP) for heavy atoms.
+
+Example basis set line:
+
+\begin{verbatim}
+LANL2DZ
+\end{verbatim}
+
+\subsection*{Raman Calculations}
+Include the \texttt{Freq=Raman} keyword and analyze intensity data in the output.
+
+\section*{Notes}
+\begin{itemize}
+\item Intermediate \texttt{.log} files can be used to visualize optimization progress.
+\item Never use the final geometry of a failed optimization.
+\item Always verify imaginary frequencies in frequency calculations.
+\end{itemize}
+
+
+\section*{Advanced Topics in Gaussian}
+
+\subsection*{Generating Additional Files}
+
+\begin{itemize}
+  \item Use \texttt{formchk} to convert \texttt{.chk} to \texttt{.fchk}.
+  \item Use \texttt{cubegen} to generate cube files for densities or MOs.
+  \item Use \texttt{pop=full} or \texttt{pop=chelpg} to extract atomic charges.
+\end{itemize}
+
+Example:
+
+\begin{verbatim}
+formchk molecule.chk molecule.fchk
+cubegen 0 density=SCF molecule.fchk density.cube -2 h
+\end{verbatim}
+
+\subsection*{Plotting Electrostatic Potential}
+
+\begin{itemize}
+  \item Use GaussView to open \texttt{.fchk} and generate electrostatic potential maps.
+  \item Export 2D or 3D plots as \texttt{.eps} for publications.
+\end{itemize}
+
+\subsection*{Functional Tuning (ω tuning)}
+
+\begin{itemize}
+  \item Use CAM-B3LYP and related functionals for charge-transfer states.
+  \item Optimize the $\omega$ parameter using ionization potential/electron affinity matching.
+\end{itemize}
+
+\subsection*{TDA and TDDFT}
+
+\begin{itemize}
+  \item TDDFT: \texttt{\# TD(NStates=10) CAM-B3LYP/6-31G(d)}
+  \item TDA: Add keyword \texttt{TD=(NStates=10,TDA)} for improved stability
+\end{itemize}
+
+\subsection*{Analyzing States and Orbitals}
+
+\begin{itemize}
+  \item Use GaussView to inspect HOMO, LUMO and transitions.
+  \item Use Multiwfn for quantitative analysis of transition density matrix.
+  \item Verify transition character (n→π*, π→π*, CT) using orbital visualization.
+\end{itemize}
+
+\subsection*{Population Analysis}
+
+\begin{itemize}
+  \item Hirshfeld: use \texttt{pop=hirshfeld}
+  \item CM5 charges: use \texttt{pop=cm5}
+\end{itemize}
+
+\subsection*{Tips}
+
+\begin{itemize}
+  \item Do not analyze failed optimizations.
+  \item Always visualize excited states with caution.
+  \item Compare different methods: B3LYP, CAM-B3LYP, M06HF.
+\end{itemize}

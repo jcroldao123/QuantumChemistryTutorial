@@ -1,0 +1,72 @@
+
+\chapter{Molcas}
+
+\section{Introduction}
+
+OpenMolcas is a powerful quantum chemistry package particularly suited for multireference methods like CASSCF and CASPT2. It supports a wide range of post-HF methods and spin-orbit coupling calculations.
+
+\section{Active Space Selection}
+
+Use the Grid Viewer (GV) to inspect molecular orbitals and guide the choice of active space:
+
+\begin{itemize}
+  \item Choose $\pi$ and $\pi^*$ orbitals for conjugated systems
+  \item Include lone pairs or nonbonding orbitals when relevant
+  \item Exclude very low or very high virtual orbitals unless involved in excitation
+\end{itemize}
+
+\section{Input Structure}
+
+Molcas input files typically include modules:
+
+\begin{verbatim}
+&GATEWAY
+Title = molecule
+Coord = molecule.xyz
+Basis = cc-pVDZ
+
+&SEWARD
+
+&SCF
+
+&RASSCF
+Inactive = 10
+Active = 4
+Ras2 = 4
+Nactel = 4 0 0
+
+&CASPT2
+
+&RASSI
+NrofJobI = 2
+\end{verbatim}
+
+\section{Optimization and State Averaging}
+
+Use \texttt{SLAPAF} for geometry optimization.
+
+State averaging:
+
+\begin{verbatim}
+CIROOT = [2,2,1]
+\end{verbatim}
+
+Distribute weights across singlet/triplet states appropriately.
+
+\section{Spectroscopic Applications}
+
+Use \texttt{RASSI} for transition dipoles, SOC, and transition intensities.
+
+\begin{itemize}
+  \item Combine ground and excited states from RASSCF/CASPT2
+  \item Calculate absorption and emission spectra (ESA/GSA)
+\end{itemize}
+
+\section{Best Practices}
+
+\begin{itemize}
+  \item Use Cholesky decomposition to speed up integrals
+  \item Start with small active spaces, then increase
+  \item Always check orbitals and CI vectors visually
+  \item Use \texttt{&ALASKA} for analytical gradients where possible
+\end{itemize}

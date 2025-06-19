@@ -1,0 +1,67 @@
+
+\chapter*{Installation and Environment Setup}
+\addcontentsline{toc}{chapter}{Installation and Environment Setup}
+
+\section*{1. WSL and MobaXterm Setup}
+
+Use MobaXterm for connecting and editing files remotely.
+
+To use WSL with Ubuntu on Windows:
+
+\begin{itemize}
+  \item Install WSL using:
+  \begin{verbatim}
+  wsl --install
+  \end{verbatim}
+  \item Use Ubuntu from the Microsoft Store.
+  \item In MobaXterm, connect via SSH to the WSL instance.
+\end{itemize}
+
+\section*{2. Backing up WSL Linux}
+
+To backup your WSL setup:
+
+\begin{verbatim}
+wsl --export Ubuntu backup.tar
+\end{verbatim}
+
+To restore:
+
+\begin{verbatim}
+wsl --import UbuntuRestored C:\WSL\UbuntuRestored backup.tar
+\end{verbatim}
+
+\section*{3. Useful Linux Tools}
+
+Install commonly used tools:
+
+\begin{verbatim}
+sudo apt update
+sudo apt install build-essential python3 python3-pip unzip git
+\end{verbatim}
+
+\section*{4. Working with the Tutorial}
+
+Download the tutorial repository:
+
+\begin{verbatim}
+git clone https://github.com/jcroldao123/chem-scripts.git
+cd chem-scripts
+make install
+\end{verbatim}
+
+To generate documentation:
+
+\begin{verbatim}
+cd docs
+make html
+\end{verbatim}
+
+\section*{5. Links and Shortcuts}
+
+\begin{itemize}
+  \item Use \texttt{Ctrl+Shift+C/V} for copy/paste in terminal.
+  \item Gaussian Basis Sets: \url{https://www.basissetexchange.org}
+  \item MobaXterm download: \url{https://mobaxterm.mobatek.net}
+  \item Ubuntu WSL install: \url{https://learn.microsoft.com/en-us/windows/wsl/install}
+\end{itemize}

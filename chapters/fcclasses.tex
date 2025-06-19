@@ -1,0 +1,128 @@
+\chapter{FCclasses}
+
+\section{Introduction}
+
+FCclasses is a tool for simulating vibronic spectra using the Franck-Condon (FC) approximation and Duschinsky rotation. It allows the modeling of absorption and emission spectra including vibrational structure.
+
+\section{Input Preparation}
+
+FCclasses requires:
+
+\begin{itemize}
+    \item Normal mode frequencies and displacement vectors for ground and excited states
+    \item Harmonic force constants
+    \item Duschinsky rotation matrix
+\end{itemize}
+
+These can be obtained from quantum chemistry software (e.g., Gaussian) and post-processed.
+
+\section{Key Files and Format}
+
+Main input files:
+
+\begin{itemize}
+    \item \texttt{freq.g}: frequencies and normal modes of ground state
+    \item \texttt{freq.e}: frequencies and normal modes of excited state
+    \item \texttt{geom.g}, \texttt{geom.e}: equilibrium geometries
+    \item \texttt{fcclasses.inp}: parameter file
+\end{itemize}
+
+\subsection*{Sample \texttt{fcclasses.inp}}
+
+\begin{verbatim}
+&input
+  temp = 298.0,
+  e0 = 0.0,
+  broad = 200.0,
+  maxquanta = 10,
+  intensity = 1,
+  npoints = 1000,
+  xmin = 0.0,
+  xmax = 5.0
+/
+\end{verbatim}
+
+\section{Running FCclasses}
+
+Run the program using:
+
+\begin{verbatim}
+fcclasses < fcclasses.inp > fcclasses.out
+\end{verbatim}
+
+Outputs include:
+
+\begin{itemize}
+    \item \texttt{fcclasses.out} – summary of input and computational results
+    \item \texttt{absorption.dat}, \texttt{emission.dat} – spectra
+    \item \texttt{stick.dat} – discrete transitions
+\end{itemize}
+
+\section{Analysis and Plotting}
+
+Spectra can be visualized using plotting software (e.g., gnuplot, matplotlib):
+
+\begin{verbatim}
+plot "absorption.dat" using 1:2 with lines
+\end{verbatim}
+
+\section*{Notes}
+
+\begin{itemize}
+    \item Frequencies must be in the same units and consistent across files.
+    \item Geometry alignment between states is critical.
+    \item Scripts can automate file extraction from Gaussian outputs.
+\end{itemize}
+
+
+\section*{Advanced Use Cases for FCclasses}
+
+\subsection*{Simplified Workflow}
+
+FCclasses can work with simplified files from Gaussian:
+
+\begin{itemize}
+  \item Convert log files to \texttt{.fchk} using \texttt{formchk}
+  \item Extract normal modes and displacements using custom Python scripts or Multiwfn
+\end{itemize}
+
+\subsection*{Absorption and Emission Spectra}
+
+You can simulate both:
+
+\begin{itemize}
+  \item AH (Adiabatic Hessian) approach – uses optimized geometries for each state
+  \item TI (Time-Independent) approximation – using a single geometry
+\end{itemize}
+
+\subsection*{Dark States and Intensity}
+
+Some excited states may be dark (oscillator strength $\approx 0$), but FCclasses can still simulate vibrational transitions for these states. Adjust broadening or restrict modes to better match experimental shapes.
+
+\subsection*{Troubleshooting Tips}
+
+\begin{itemize}
+  \item Use consistent basis sets and functionals across states
+  \item Check Duschinsky rotation matrix dimensions and sanity
+  \item Align geometries before computing displacements
+\end{itemize}
+
+\subsection*{Automated Input Preparation}
+
+Scripts can assist in generating:
+
+\begin{itemize}
+  \item Geometry files from Gaussian logs
+  \item Displacement vectors
+  \item FCclasses input files (\texttt{fcclasses.inp})
+\end{itemize}
+
+\subsection*{Visualization}
+
+Plot stick spectra and convoluted spectra for absorption/emission using:
+
+\begin{verbatim}
+gnuplot
+matplotlib
+xmgrace
+\end{verbatim}

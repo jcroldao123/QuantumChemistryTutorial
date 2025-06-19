@@ -1,0 +1,220 @@
+\chapter{Turbomole}
+
+\section{Introduction}
+
+Turbomole is an efficient quantum chemistry software package for performing Hartree-Fock, DFT, MP2 and related calculations.
+
+It is driven primarily through terminal-based scripts and text files.
+
+\section{Setting Up a Calculation}
+
+To initialize a working directory, use the \texttt{define} script:
+
+\begin{verbatim}
+define
+\end{verbatim}
+
+You will be prompted to input:
+\begin{itemize}
+    \item Molecular geometry (cartesian or internal coordinates)
+    \item Basis sets and atomic types
+    \item Charge and multiplicity
+    \item SCF and calculation method
+\end{itemize}
+
+After setup, several files are generated including:
+\begin{itemize}
+    \item \texttt{control} – main input file
+    \item \texttt{coord} – geometry
+    \item \texttt{basis} – basis set definitions
+\end{itemize}
+
+\section{Running Jobs}
+
+Use specific modules for different job types. For example:
+
+\begin{verbatim}
+dscf
+ridft
+mpgrad
+escf
+\end{verbatim}
+
+These programs read the \texttt{control} file and produce output in standard text files.
+
+\section{Analyzing Output}
+
+After execution, key results are stored in:
+
+\begin{itemize}
+    \item \texttt{job.last} – final log
+    \item \texttt{energy} – total energy summary
+    \item \texttt{gradient} – forces
+    \item \texttt{mos} – molecular orbitals
+\end{itemize}
+
+You can visualize orbitals with external tools like \texttt{Turbomole-TurboPlot} or export for other viewers.
+
+\section{Sample Workflow}
+
+\begin{verbatim}
+define
+dscf > dscf.out
+ridft > ridft.out
+\end{verbatim}
+
+Check each step and review \texttt{control} parameters as needed.
+
+\section*{Notes}
+\begin{itemize}
+    \item Use \texttt{t2x} to convert Turbomole output to other formats.
+    \item All files are text-based and editable.
+    \item Scripts like \texttt{jobex} automate geometry optimization loops.
+\end{itemize}
+
+
+\section*{Advanced Tips for Turbomole}
+
+\subsection*{Input File Setup}
+
+Use the \texttt{define} script interactively to prepare input files:
+
+\begin{itemize}
+  \item Geometry: read from \texttt{coord} or manually input
+  \item Charge and multiplicity: set in \texttt{control}
+  \item Basis set: select from internal list (e.g., def-SVP, def2-TZVP)
+\end{itemize}
+
+\subsection*{Geometry Conversion}
+
+Convert coordinates from Gaussian (.gjf) or ORCA (.xyz) using external tools or scripts. Make sure the atom ordering and units are correct.
+
+\subsection*{Vertical Transitions with ESCF}
+
+Add to the \texttt{control} file:
+
+\begin{verbatim}
+$escf
+  irrep=a1
+  nroots=10
+\end{verbatim}
+
+Then run:
+
+\begin{verbatim}
+escf > escf.out
+\end{verbatim}
+
+\subsection*{Job Management}
+
+Use \texttt{jobex} for geometry optimization:
+
+\begin{verbatim}
+jobex -gcart > opt.out
+\end{verbatim}
+
+Use \texttt{ridft}, \texttt{dscf} and \texttt{grad} for specific tasks.
+
+\subsection*{Output Files and Analysis}
+
+Key outputs:
+
+\begin{itemize}
+  \item \texttt{control} – main configuration
+  \item \texttt{energy} – SCF energy values
+  \item \texttt{mos} – molecular orbitals
+  \item \texttt{gradient} – for optimization steps
+\end{itemize}
+
+\subsection*{Visualization and Conversion}
+
+Use \texttt{t2x} and tools like Avogadro or VMD for orbital and structure visualization. You may convert Turbomole output to cube or Molden formats.
+
+
+\section{Getting Started}
+
+\subsection*{TmoleX GUI}
+
+TmoleX is a graphical interface for Turbomole that allows easier creation and submission of jobs. It is available for Linux and Windows and is useful for geometry visualization, setup, and basic analysis.
+
+\subsection*{Shell Setup}
+
+To load Turbomole:
+
+\begin{verbatim}
+source /opt/turbomole/Config_turbo_env
+\end{verbatim}
+
+\section{Ground-State Optimization}
+
+Use the following commands in the working directory:
+
+\begin{verbatim}
+define
+jobex -ri -c 200
+\end{verbatim}
+
+After geometry optimization:
+
+\begin{verbatim}
+aoforce > freq.out
+\end{verbatim}
+
+To extract frequencies:
+
+\begin{verbatim}
+grep -A1 'frequency' freq.out
+\end{verbatim}
+
+\section{Excited-State Calculations}
+
+Perform TDDFT vertical excitation calculations:
+
+\begin{verbatim}
+escf > escf.out
+\end{verbatim}
+
+For excited-state optimizations:
+
+\begin{verbatim}
+jobex -ri -level escf -c 200
+\end{verbatim}
+
+Calculate frequencies in excited states:
+
+\begin{verbatim}
+escf > escf.out
+aoforce -level escf > freq_es.out
+\end{verbatim}
+
+\section{UV-Vis Spectrum Generation}
+
+Use the \texttt{t2x} and \texttt{spectrum} tools or post-process with Multiwfn.
+
+Plot oscillator strengths vs excitation energy using:
+
+\begin{verbatim}
+grep 'excitation energy' escf.out
+\end{verbatim}
+
+\section{Troubleshooting and Cluster Execution}
+
+\begin{itemize}
+  \item Fix permission issues with:
+  \begin{verbatim}
+  chmod -R u+rwX .
+  \end{verbatim}
+  \item Floating-point exceptions may indicate poor geometry or convergence failure.
+  \item For cluster usage, prepare a \texttt{.pbs} file:
+\end{itemize}
+
+\subsection*{Example PBS Script}
+
+\begin{verbatim}
+#!/bin/bash
+#PBS -N turbomole_job
+#PBS -l nodes=1:ppn=8
+cd $PBS_O_WORKDIR
+source /opt/turbomole/Config_turbo_env
+jobex > job.out
+\end{verbatim}

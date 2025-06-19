@@ -1,0 +1,113 @@
+\chapter{Dalton}
+
+\section{Introduction}
+
+Dalton is a powerful electronic structure program for calculating molecular properties such as polarizabilities, electronic excitation energies, and multipole moments.
+
+\section{Input Files}
+
+A Dalton calculation requires at least two files:
+\begin{itemize}
+    \item \texttt{.mol} – molecular structure and geometry
+    \item \texttt{.dal} – specification of the calculation
+\end{itemize}
+
+\subsection*{Example \texttt{.mol} file}
+
+\begin{verbatim}
+Charge=0  Multiplicity=1
+O     0.000000    0.000000    0.000000
+H     0.757160    0.586260    0.000000
+H    -0.757160    0.586260    0.000000
+\end{verbatim}
+
+\subsection*{Example \texttt{.dal} file}
+
+\begin{verbatim}
+**DALTON INPUT
+.RUN WAVE FUNCTIONS
+**WAVE FUNCTIONS
+.HF
+**END OF INPUT
+\end{verbatim}
+
+\section{Running the Calculation}
+
+You can execute the calculation using:
+
+\begin{verbatim}
+dalton input -mol input.mol -dal input.dal
+\end{verbatim}
+
+Adjust this command as necessary for SLURM or PBS batch submission.
+
+\section{Output Analysis}
+
+Dalton produces a \texttt{.out} file which contains the results of the calculation. Key elements include:
+
+\begin{itemize}
+    \item Total energy
+    \item Final geometry
+    \item MO coefficients
+    \item Transition properties
+\end{itemize}
+
+Examine the output with terminal tools like \texttt{less}, \texttt{grep} or use a text editor.
+
+\section*{Notes}
+\begin{itemize}
+    \item Dalton requires properly formatted input files to function.
+    \item Errors are usually caught during the input parsing phase.
+\end{itemize}
+
+
+\section*{Advanced Usage and TDDFT in Dalton}
+
+\subsection*{TDDFT Setup}
+
+To run TDDFT in Dalton, your \texttt{.dal} file should include:
+
+\begin{verbatim}
+**DALTON INPUT
+.RUN RESPONSE
+**RESPONS
+.TDDFT
+*READ
+NSTATE=10
+**END OF INPUT
+\end{verbatim}
+
+\subsection*{Spin-Orbit Coupling (SOC)}
+
+For SOC calculations, Dalton requires proper symmetry and relativistic settings:
+
+\begin{verbatim}
+**HAMILTONIAN
+.SPIN-ORBIT
+\end{verbatim}
+
+\subsection*{Reusing Occupation Information}
+
+You may reuse converged occupation from one run to initialize another. Use \texttt{.mol} with previous orbital information or rename generated files accordingly.
+
+\subsection*{Solvent Effects}
+
+Use PCM for implicit solvent:
+
+\begin{verbatim}
+**PCM
+.SOLVENT
+WATER
+\end{verbatim}
+
+\subsection*{Transition Properties and Analysis}
+
+Dalton can compute transition dipole moments, oscillator strengths, and excitation energies. These appear in the \texttt{.out} file and can be parsed with scripts.
+
+\subsection*{Tips for Calculations with Metal Complexes}
+
+\begin{itemize}
+  \item Use effective core potentials (ECPs) if available.
+  \item Choose suitable basis sets (e.g., def2-TZVP for metals).
+  \item Symmetry can affect convergence and property calculations — disable if needed.
+\end{itemize}

@@ -1,0 +1,84 @@
+
+\chapter{GROMACS}
+
+\section{Introduction}
+
+GROMACS is a versatile package for performing molecular dynamics, primarily for biochemical molecules such as proteins, lipids, and nucleic acids.
+
+\section{Basic Workflow}
+
+Typical GROMACS workflow includes:
+
+\begin{enumerate}
+    \item Preparing the structure (\texttt{.gro}, \texttt{.pdb})
+    \item Generating topology files
+    \item Defining the simulation box and solvation
+    \item Adding ions
+    \item Energy minimization
+    \item Equilibration (NVT, NPT)
+    \item Production MD
+\end{enumerate}
+
+\section{Key Commands}
+
+\subsection*{1. Structure and Topology}
+
+\begin{verbatim}
+gmx pdb2gmx -f molecule.pdb -o processed.gro -water spce
+\end{verbatim}
+
+\subsection*{2. Define Box}
+
+\begin{verbatim}
+gmx editconf -f processed.gro -o newbox.gro -c -d 1.0 -bt cubic
+\end{verbatim}
+
+\subsection*{3. Solvate}
+
+\begin{verbatim}
+gmx solvate -cp newbox.gro -cs spc216.gro -o solvated.gro -p topol.top
+\end{verbatim}
+
+\subsection*{4. Add Ions}
+
+\begin{verbatim}
+gmx grompp -f ions.mdp -c solvated.gro -p topol.top -o ions.tpr
+gmx genion -s ions.tpr -o solv_ions.gro -p topol.top -pname NA -nname CL -neutral
+\end{verbatim}
+
+\subsection*{5. Energy Minimization}
+
+\begin{verbatim}
+gmx grompp -f minim.mdp -c solv_ions.gro -p topol.top -o em.tpr
+gmx mdrun -v -deffnm em
+\end{verbatim}
+
+\subsection*{6. Equilibration and Production}
+
+\begin{verbatim}
+gmx grompp -f nvt.mdp -c em.gro -p topol.top -o nvt.tpr
+gmx mdrun -deffnm nvt
+
+gmx grompp -f npt.mdp -c nvt.gro -p topol.top -o npt.tpr
+gmx mdrun -deffnm npt
+
+gmx grompp -f md.mdp -c npt.gro -p topol.top -o md.tpr
+gmx mdrun -deffnm md
+\end{verbatim}
+
+\section{Analysis}
+
+Use \texttt{gmx energy}, \texttt{gmx rms}, \texttt{gmx gyrate}, etc.
+
+\begin{verbatim}
+gmx energy -f md.edr -o energy.xvg
+\end{verbatim}
+
+Plot using \texttt{xmgrace}, \texttt{matplotlib} or \texttt{gnuplot}.
+
+\section*{Notes}
+\begin{itemize}
+    \item All steps require \texttt{.mdp} parameter files.
+    \item GROMACS is case-sensitive and file naming consistency is important.
+    \item Output trajectory files: \texttt{.trr}, \texttt{.xtc}, energy files: \texttt{.edr}, logs: \texttt{.log}.
+\end{itemize}
