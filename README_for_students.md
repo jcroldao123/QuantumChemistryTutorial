@@ -70,7 +70,7 @@ Use **MobaXterm** or **VSCode** to connect to WSL and manage files comfortably.
 ## 🙌 Contributions
 
 Found a typo? Have a better example? Want to share a useful script?  
-Send suggestions via GitHub or directly to **Prof. Juan Carlos Roldao**.
+Send suggestions via GitHub or directly to **Dr. Juan Carlos Roldao** via juancroldao@gmail.com.
 
 ---
 *Created with care for students and researchers by JCR.*
