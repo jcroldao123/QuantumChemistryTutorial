@@ -2,103 +2,30 @@
 
 \section{Introduction}
 
-ORCA is a flexible, efficient, and easy-to-use general-purpose quantum chemistry package that is particularly strong in spectroscopy and open-shell systems.
+ORCA is a flexible and powerful quantum chemistry package designed for modern electronic structure methods, including DFT, TDDFT, and multireference methods.
 
-\section{Input File Structure}
+\section{TDDFT Calculations}
 
-ORCA input files have the extension \texttt{.inp} and typically include:
-
-\begin{itemize}
-    \item Calculation keywords
-    \item Molecular structure (XYZ format)
-    \item Basis set and method
-\end{itemize}
-
-\subsection*{Example ORCA Input}
+To run TDDFT with ORCA:
 
 \begin{verbatim}
-! B3LYP 6-31G* Opt Freq
-
-* xyz 0 1
-O      0.000000    0.000000    0.000000
-H      0.757160    0.586260    0.000000
-H     -0.757160    0.586260    0.000000
-*
-\end{verbatim}
-
-\section{Running a Calculation}
-
-Use the following command to run ORCA:
-
-\begin{verbatim}
-orca input.inp > output.out
-\end{verbatim}
-
-It will generate:
-\begin{itemize}
-    \item \texttt{.out} – main output
-    \item \texttt{.gbw} – binary wavefunction
-    \item \texttt{.hess}, \texttt{.engrad} – gradient and Hessian if requested
-\end{itemize}
-
-\section{TDDFT and Excited States}
-
-To run a TDDFT calculation:
-
-\begin{verbatim}
-! B3LYP 6-31G* TDDFT TightSCF
-\end{verbatim}
-
-You can also request specific excited states:
-
-\begin{verbatim}
-%tddft
-   nroots 10
-   maxdim 50
-end
-\end{verbatim}
-
-\section{Solvent Effects}
-
-Use the CPCM or SMD model:
-
-\begin{verbatim}
-%cpcm
-  smd true
-  solvent "Water"
-end
-\end{verbatim}
-
-\section{Visualizing Results}
-
-Use Avogadro, Chemcraft, or Gabedit to visualize the geometry, MOs, and vibrations.
-
-For spectra, ORCA can output to `.csv` and `.dat` formats, readable by plotting tools.
-
-\section*{Notes}
-\begin{itemize}
-    \item ORCA input is sensitive to formatting—avoid tabs and use correct case.
-    \item The \texttt{.gbw} file can be reused for restart or post-processing.
-    \item ORCA can run in parallel via \texttt{orca input.inp > output.out &}
-\end{itemize}
-
-
-\section*{Advanced ORCA Usage}
-
-\subsection*{TDDFT with Spin-Orbit Coupling}
-
-To include spin-orbit coupling (SOC) in TDDFT calculations:
-
-\begin{verbatim}
-! B3LYP def2-SVP TightSCF TDDFT SOC
+! B3LYP def2-SVP TightSCF TDDFT
 %tddft
   nroots 10
 end
 \end{verbatim}
 
-\subsection*{Solvent Models}
+\section{Spin-Orbit Coupling}
 
-ORCA supports implicit solvation via CPCM or SMD:
+To include spin-orbit coupling (SOC):
+
+\begin{verbatim}
+! B3LYP def2-TZVP SOC TDDFT
+\end{verbatim}
+
+\section{Solvation Models}
+
+You can use CPCM or SMD for solvation:
 
 \begin{verbatim}
 %cpcm
@@ -107,27 +34,28 @@ ORCA supports implicit solvation via CPCM or SMD:
 end
 \end{verbatim}
 
-\subsection*{Using Chemcraft and Multiwfn}
+\section{Visualization and Analysis}
 
 \begin{itemize}
-  \item Visualize molecular orbitals and vibrational modes with Chemcraft.
-  \item Analyze electron density difference with Multiwfn from ORCA cube files.
+  \item Use \texttt{orca_plot} to extract orbital plots.
+  \item Use Chemcraft or Avogadro to visualize orbitals and cube files.
+  \item Use Multiwfn to analyze electron density and ESP maps.
 \end{itemize}
 
-\subsection*{Excited-State Analysis}
+\section{Excited-State Analysis}
 
 Check the \texttt{.out} file for:
 
 \begin{itemize}
   \item Excitation energies and oscillator strengths
-  \item Orbital transitions (e.g., HOMO → LUMO)
-  \item Assignment of charge transfer (CT) or local excitation (LE)
+  \item Orbital contributions: e.g., HOMO $\rightarrow$ LUMO
+  \item Natural transition orbitals (NTOs)
 \end{itemize}
 
-\subsection*{Tips}
+\section{Tips}
 
 \begin{itemize}
-  \item Use \texttt{maxdim} and \texttt{tol} in TDDFT block to improve convergence.
-  \item Always verify orbital character with visual inspection.
-  \item Use \texttt{NumFreq} for numerical frequencies when Hessians fail.
+  \item Use \texttt{maxdim} and \texttt{tol} in \texttt{\%tddft} block for convergence tuning.
+  \item Inspect orbital contributions for charge transfer vs local excitations.
+  \item Use \texttt{NumFreq} for numerical frequencies if analytic gradients are not available.
 \end{itemize}
