@@ -1,0 +1,29 @@
+name: Build LaTeX and Deploy PDF
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Setup LaTeX
+        uses: dante-ev/latex-action@v2
+        with:
+          root_file: main.tex
+
+      - name: Move compiled PDF
+        run: |
+          mkdir public
+          mv main.pdf public/QuantumChemistryTutorial.pdf
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public
