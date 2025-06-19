@@ -29,39 +29,31 @@ Covered packages include:
 ├── preamble.tex     # Document preamble (packages, formatting)
 ├── Makefile         # Build commands for LaTeX
 ├── README.md        # Project documentation
+├── README_for_students.md # Student-friendly guide
 └── LICENSE          # License (MIT)
 ```
 
-## 🛠️ Requirements
+## 📦 Download the Tutorial
 
-To compile this project to PDF, you need a full LaTeX installation:
+**Latest compiled PDF:**  
+👉 [QuantumChemistryTutorial.pdf](https://jcroldao123.github.io/QuantumChemistryTutorial/QuantumChemistryTutorial.pdf)
 
-### Ubuntu / Debian
+**Student-friendly Guide:**  
+👉 [README_for_students.md](https://jcroldao123.github.io/QuantumChemistryTutorial/README_for_students.md)
+
+## 🛠️ Compile Locally
+
+Install LaTeX (Ubuntu):
 ```bash
 sudo apt update
 sudo apt install texlive-full
 ```
 
-### Compile with:
+Compile with:
 ```bash
 make pdf
 ```
 
-This generates:
-
-```
-QuantumChemistryTutorial.pdf
-```
-
-## 📢 Contributions
-
-Contributions are welcome! If you:
-- Use another quantum chemistry package and want to add it
-- Have scripts or workflows you want to share
-- Found a typo or unclear section
-
-Feel free to open an issue or pull request.
-
 ---
 
-© 2025 – Dr. Juan Carlos Roldao
+© 2025 – Juan Carlos Roldao
