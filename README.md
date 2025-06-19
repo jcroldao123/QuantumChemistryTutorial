@@ -64,4 +64,4 @@ Feel free to open an issue or pull request.
 
 ---
 
-© 2025 – Juan Carlos Roldao
+© 2025 – Dr. Juan Carlos Roldao
